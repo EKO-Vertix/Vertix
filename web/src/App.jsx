@@ -7,10 +7,11 @@ import Dashboard from './pages/Dashboard.jsx';
 import Calculator from './pages/Calculator.jsx';
 import Bets from './pages/Bets.jsx';
 import CalendarPage from './pages/CalendarPage.jsx';
+import Settings from './pages/Settings.jsx';
 
 function Protected({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="app-loading">Cargando…</div>;
+  if (loading) return <div className="app-loading">…</div>;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/calculadora" element={<Calculator />} />
         <Route path="/apuestas" element={<Bets />} />
         <Route path="/calendario" element={<CalendarPage />} />
+        <Route path="/ajustes" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

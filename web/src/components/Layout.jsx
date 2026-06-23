@@ -1,15 +1,16 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
+import { useT } from '../settings.jsx';
 import {
-  IconDashboard, IconCalculator, IconList, IconCalendar, IconLogout, IconPlus,
+  IconDashboard, IconCalculator, IconList, IconCalendar, IconSettings, IconLogout, IconPlus,
 } from './icons.jsx';
-import { useNavigate } from 'react-router-dom';
 
 const NAV = [
-  { to: '/', label: 'Dashboard', icon: IconDashboard, end: true, sub: 'Resumen de tu rendimiento' },
-  { to: '/calculadora', label: 'Calculadora', icon: IconCalculator, sub: 'Calcula stakes y surebets' },
-  { to: '/apuestas', label: 'Apuestas', icon: IconList, sub: 'Registro de tus operaciones' },
-  { to: '/calendario', label: 'Calendario', icon: IconCalendar, sub: 'Ganancias por día' },
+  { to: '/', key: 'dashboard', icon: IconDashboard, end: true },
+  { to: '/calculadora', key: 'calculator', icon: IconCalculator },
+  { to: '/apuestas', key: 'bets', icon: IconList },
+  { to: '/calendario', key: 'calendar', icon: IconCalendar },
+  { to: '/ajustes', key: 'settings', icon: IconSettings },
 ];
 
 export function Brand() {
@@ -30,10 +31,12 @@ export function Brand() {
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const t = useT();
   const location = useLocation();
   const navigate = useNavigate();
   const current = NAV.find((n) => (n.end ? location.pathname === n.to : location.pathname.startsWith(n.to))) || NAV[0];
   const initials = (user?.name || user?.email || '?').trim().slice(0, 1).toUpperCase();
+  const showNew = location.pathname !== '/calculadora' && location.pathname !== '/ajustes';
 
   return (
     <div className="app">
@@ -42,7 +45,7 @@ export default function Layout() {
         <nav className="nav">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} end={n.end} className="nav__link">
-              <n.icon /> <span className="label-extra">{n.label}</span>
+              <n.icon /> <span className="label-extra">{t(`nav.${n.key}`)}</span>
             </NavLink>
           ))}
         </nav>
@@ -50,10 +53,10 @@ export default function Layout() {
           <div className="userchip">
             <div className="userchip__avatar">{initials}</div>
             <div className="userchip__meta grow">
-              <div className="userchip__name">{user?.name || 'Mi cuenta'}</div>
+              <div className="userchip__name">{user?.name || t('common.account')}</div>
               <div className="userchip__email">{user?.email}</div>
             </div>
-            <button className="btn btn--icon btn--ghost" title="Cerrar sesión" onClick={logout}>
+            <button className="btn btn--icon btn--ghost" title={t('action.logout')} onClick={logout}>
               <IconLogout size={16} />
             </button>
           </div>
@@ -63,12 +66,12 @@ export default function Layout() {
       <div className="main">
         <header className="topbar">
           <div className="topbar__title">
-            <h1>{current.label}</h1>
-            <small>{current.sub}</small>
+            <h1>{t(`nav.${current.key}`)}</h1>
+            <small>{t(`sub.${current.key}`)}</small>
           </div>
-          {location.pathname !== '/calculadora' && (
+          {showNew && (
             <button className="btn btn--primary" onClick={() => navigate('/calculadora')}>
-              <IconPlus size={16} /> Nueva surebet
+              <IconPlus size={16} /> {t('action.newSurebet')}
             </button>
           )}
         </header>

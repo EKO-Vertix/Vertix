@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import BetsTable from '../components/BetsTable.jsx';
-import { money, pct, pnlClass, MONTHS_ES } from '../lib/format.js';
+import { money, pct, pnlClass } from '../lib/format.js';
+import { useT, useSettings, MONTHS } from '../settings.jsx';
 import {
   IconWallet, IconTrendUp, IconTarget, IconClock, IconList, IconBolt,
 } from '../components/icons.jsx';
@@ -12,12 +13,14 @@ function lastSixMonths() {
   const d = new Date();
   for (let i = 5; i >= 0; i--) {
     const x = new Date(d.getFullYear(), d.getMonth() - i, 1);
-    out.push({ key: `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}`, label: MONTHS_ES[x.getMonth()].slice(0, 3) });
+    out.push({ key: `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}`, m: x.getMonth() });
   }
   return out;
 }
 
 export default function Dashboard() {
+  const t = useT();
+  const { lang } = useSettings();
   const [summary, setSummary] = useState(null);
   const [bars, setBars] = useState([]);
   const [recent, setRecent] = useState([]);
@@ -39,51 +42,51 @@ export default function Dashboard() {
     }).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="muted">Cargando dashboard…</div>;
+  if (loading) return <div className="muted">{t('dash.loading')}</div>;
 
   if (summary && summary.count === 0) {
     return (
       <div className="panel">
         <div className="empty">
           <IconBolt />
-          <h3>Aún no has registrado apuestas</h3>
-          <p>Usa la calculadora para repartir tu stake en una surebet y guárdala. Aquí verás tu beneficio, ROI y rachas.</p>
-          <Link to="/calculadora" className="btn btn--primary" style={{ marginTop: 16 }}>Abrir calculadora</Link>
+          <h3>{t('dash.emptyTitle')}</h3>
+          <p>{t('dash.emptyText')}</p>
+          <Link to="/calculadora" className="btn btn--primary" style={{ marginTop: 16 }}>{t('dash.openCalc')}</Link>
         </div>
       </div>
     );
   }
 
   const maxBar = Math.max(1, ...bars.map((b) => Math.abs(b.profit)));
-  const month = MONTHS_ES[new Date().getMonth()];
+  const month = MONTHS[lang][new Date().getMonth()];
 
   return (
     <div className="stack stack--lg">
       <div className="panel overview">
         <div className="overview__item">
-          <div className="overview__label"><IconWallet size={15} /> Beneficio total</div>
+          <div className="overview__label"><IconWallet size={15} /> {t('dash.totalProfit')}</div>
           <div className={`overview__value ${pnlClass(summary.totalProfit)}`}>{money(summary.totalProfit, { sign: true })}</div>
-          <div className="overview__sub">{summary.count} apuesta{summary.count !== 1 ? 's' : ''}</div>
+          <div className="overview__sub">{summary.count} {summary.count !== 1 ? t('dash.bets') : t('dash.bet')}</div>
         </div>
         <div className="overview__item">
-          <div className="overview__label"><IconTrendUp size={15} /> Este mes</div>
+          <div className="overview__label"><IconTrendUp size={15} /> {t('dash.thisMonth')}</div>
           <div className={`overview__value ${pnlClass(summary.monthProfit)}`}>{money(summary.monthProfit, { sign: true })}</div>
           <div className="overview__sub">{month}</div>
         </div>
         <div className="overview__item">
-          <div className="overview__label"><IconTarget size={15} /> ROI</div>
+          <div className="overview__label"><IconTarget size={15} /> {t('dash.roi')}</div>
           <div className={`overview__value ${pnlClass(summary.roi)}`}>{pct(summary.roi, { sign: true })}</div>
-          <div className="overview__sub">sobre {money(summary.totalStaked)}</div>
+          <div className="overview__sub">{t('dash.over')} {money(summary.totalStaked)}</div>
         </div>
         <div className="overview__item">
-          <div className="overview__label"><IconClock size={15} /> Pendientes</div>
+          <div className="overview__label"><IconClock size={15} /> {t('dash.pending')}</div>
           <div className="overview__value">{summary.pending}</div>
-          <div className="overview__sub">sin liquidar</div>
+          <div className="overview__sub">{t('dash.unsettled')}</div>
         </div>
       </div>
 
       <div className="panel">
-        <div className="panel__head"><h2>Beneficio por mes</h2><span className="muted">Últimos 6 meses</span></div>
+        <div className="panel__head"><h2>{t('dash.monthlyProfit')}</h2><span className="muted">{t('dash.last6')}</span></div>
         <div className="panel__body">
           <div className="bars">
             {bars.map((b) => (
@@ -93,7 +96,7 @@ export default function Dashboard() {
                   <div className={`bars__bar ${b.profit >= 0 ? 'pos' : 'neg'}`}
                     style={{ height: `${b.profit ? Math.max(5, (Math.abs(b.profit) / maxBar) * 100) : 0}%` }} />
                 </div>
-                <div className="bars__label">{b.label}</div>
+                <div className="bars__label">{MONTHS[lang][b.m].slice(0, 3)}</div>
               </div>
             ))}
           </div>
@@ -102,11 +105,11 @@ export default function Dashboard() {
 
       <div className="panel">
         <div className="panel__head">
-          <h2>Últimas apuestas</h2>
-          <Link to="/apuestas" className="btn btn--ghost btn--sm"><IconList size={15} /> Ver todas</Link>
+          <h2>{t('dash.recent')}</h2>
+          <Link to="/apuestas" className="btn btn--ghost btn--sm"><IconList size={15} /> {t('action.viewAll')}</Link>
         </div>
         <div className="panel__body--flush">
-          {recent.length ? <BetsTable bets={recent} compact /> : <div className="empty"><p>Sin apuestas todavía.</p></div>}
+          {recent.length ? <BetsTable bets={recent} compact /> : <div className="empty"><p>{t('dash.noBets')}</p></div>}
         </div>
       </div>
     </div>

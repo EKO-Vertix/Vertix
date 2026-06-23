@@ -21,17 +21,19 @@ export function pnlClass(n) {
   return 'value-flat';
 }
 
-export function fmtDate(iso) {
+export function fmtDate(iso, locale = 'es-ES') {
   if (!iso) return '—';
   const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+  return d.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-export function fmtDateShort(iso) {
+export function fmtDateShort(iso, locale = 'es-ES') {
   if (!iso) return '—';
   const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+  return d.toLocaleDateString(locale, { day: '2-digit', month: 'short' });
 }
+
+export const localeFor = (lang) => (lang === 'en' ? 'en-US' : 'es-ES');
 
 export function todayISO() {
   return new Date().toISOString().slice(0, 10);

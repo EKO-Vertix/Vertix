@@ -3,16 +3,23 @@ import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { calcArbitrage } from '../lib/arb.js';
 import { money, pct, todayISO } from '../lib/format.js';
+import { useT, useSettings } from '../settings.jsx';
 import { IconPlus, IconTrash, IconBolt, IconCheck } from '../components/icons.jsx';
 
 const num = (v) => parseFloat(String(v).replace(',', '.'));
 
-const SPORTS = ['Fútbol', 'Tenis', 'Baloncesto', 'F1', 'Béisbol', 'Hockey', 'eSports', 'Otro'];
+const SPORTS = [
+  { v: 'Fútbol', en: 'Football' }, { v: 'Tenis', en: 'Tennis' }, { v: 'Baloncesto', en: 'Basketball' },
+  { v: 'F1', en: 'F1' }, { v: 'Béisbol', en: 'Baseball' }, { v: 'Hockey', en: 'Hockey' },
+  { v: 'eSports', en: 'eSports' }, { v: 'Otro', en: 'Other' },
+];
 
 export default function Calculator() {
+  const t = useT();
+  const { lang } = useSettings();
   const [legs, setLegs] = useState([
-    { bookmaker: '', outcome: 'Local', odds: '' },
-    { bookmaker: '', outcome: 'Visitante', odds: '' },
+    { bookmaker: '', outcome: '', odds: '' },
+    { bookmaker: '', outcome: '', odds: '' },
   ]);
   const [totalStake, setTotalStake] = useState('100');
   const [rounding, setRounding] = useState('0');
@@ -38,7 +45,7 @@ export default function Calculator() {
     setSaved(false);
   }
   function addLeg() {
-    setLegs((prev) => [...prev, { bookmaker: '', outcome: `Resultado ${prev.length + 1}`, odds: '' }]);
+    setLegs((prev) => [...prev, { bookmaker: '', outcome: '', odds: '' }]);
   }
   function removeLeg(i) {
     setLegs((prev) => (prev.length > 2 ? prev.filter((_, idx) => idx !== i) : prev));
@@ -48,14 +55,14 @@ export default function Calculator() {
     if (!calc) return;
     setError('');
     if (!event.trim()) {
-      setError('Pon un nombre de evento para guardar la apuesta');
+      setError(t('calc.needEvent'));
       return;
     }
     setSaving(true);
     try {
       const betLegs = legs.map((l, i) => ({
-        bookmaker: l.bookmaker || `Casa ${i + 1}`,
-        outcome: l.outcome || `Resultado ${i + 1}`,
+        bookmaker: l.bookmaker || `${t('calc.house')} ${i + 1}`,
+        outcome: l.outcome || `${t('calc.outcome')} ${i + 1}`,
         odds: decimals[i],
         stake: calc.stakes[i],
       }));
@@ -79,6 +86,7 @@ export default function Calculator() {
   }
 
   const isArb = calc?.isArb;
+  const sportLabel = (s) => (lang === 'en' ? s.en : s.v);
 
   return (
     <div className="calc-grid">
@@ -86,50 +94,50 @@ export default function Calculator() {
       <div className="stack">
         <div className="panel">
           <div className="panel__head">
-            <h2>Cuotas y reparto</h2>
-            <span className="muted" style={{ fontSize: '0.8rem' }}>Cuotas decimales</span>
+            <h2>{t('calc.title')}</h2>
+            <span className="muted" style={{ fontSize: '0.8rem' }}>{t('calc.decimal')}</span>
           </div>
           <div className="panel__body stack">
             <div className="row" style={{ gap: 16 }}>
               <div className="field grow">
-                <label>Inversión total</label>
+                <label>{t('calc.totalStake')}</label>
                 <input className="input num" inputMode="decimal" value={totalStake}
                   onChange={(e) => { setTotalStake(e.target.value); setSaved(false); }} placeholder="100" />
               </div>
               <div className="field grow">
-                <label>Redondeo de stakes</label>
+                <label>{t('calc.rounding')}</label>
                 <select className="select" value={rounding} onChange={(e) => setRounding(e.target.value)}>
-                  <option value="0">Sin redondeo</option>
-                  <option value="1">A 1</option>
-                  <option value="5">A 5</option>
-                  <option value="10">A 10</option>
+                  <option value="0">{t('calc.noRound')}</option>
+                  <option value="1">{t('calc.roundTo')} 1</option>
+                  <option value="5">{t('calc.roundTo')} 5</option>
+                  <option value="10">{t('calc.roundTo')} 10</option>
                 </select>
               </div>
             </div>
 
             <div>
               <div className="leg-row" style={{ marginBottom: 6 }}>
-                <span className="section-title">Casa de apuestas</span>
-                <span className="section-title">Resultado</span>
-                <span className="section-title" style={{ textAlign: 'right' }}>Cuota</span>
+                <span className="section-title">{t('calc.bookmaker')}</span>
+                <span className="section-title">{t('calc.outcome')}</span>
+                <span className="section-title" style={{ textAlign: 'right' }}>{t('calc.odds')}</span>
                 <span />
               </div>
               {legs.map((l, i) => (
                 <div className="leg-row" key={i}>
-                  <input className="input" placeholder={`Casa ${i + 1}`} value={l.bookmaker}
+                  <input className="input" placeholder={`${t('calc.house')} ${i + 1}`} value={l.bookmaker}
                     onChange={(e) => setLeg(i, { bookmaker: e.target.value })} />
-                  <input className="input" placeholder="Resultado" value={l.outcome}
+                  <input className="input" placeholder={t('calc.outcome')} value={l.outcome}
                     onChange={(e) => setLeg(i, { outcome: e.target.value })} />
                   <input className="input num" inputMode="decimal" placeholder="2.10"
                     value={l.odds} onChange={(e) => setLeg(i, { odds: e.target.value })} />
                   <button className="btn btn--icon btn--ghost" onClick={() => removeLeg(i)}
-                    disabled={legs.length <= 2} title="Quitar resultado">
+                    disabled={legs.length <= 2} title={t('bets.delete')}>
                     <IconTrash size={15} />
                   </button>
                 </div>
               ))}
               <button className="btn btn--ghost btn--sm" style={{ marginTop: 12 }} onClick={addLeg}>
-                <IconPlus size={15} /> Añadir resultado
+                <IconPlus size={15} /> {t('calc.addOutcome')}
               </button>
             </div>
           </div>
@@ -137,38 +145,38 @@ export default function Calculator() {
 
         {/* ---- Guardar ---- */}
         <div className="panel">
-          <div className="panel__head"><h2>Registrar esta apuesta</h2></div>
+          <div className="panel__head"><h2>{t('calc.register')}</h2></div>
           <div className="panel__body stack">
             {error && <div className="alert alert--error">{error}</div>}
             {saved && (
               <div className="alert alert--ok">
-                Apuesta guardada como pendiente. <Link to="/apuestas">Ver en mis apuestas →</Link>
+                {t('calc.saved')} <Link to="/apuestas">{t('calc.seeInBets')}</Link>
               </div>
             )}
             <div className="field">
-              <label>Evento</label>
-              <input className="input" placeholder="Ej: Real Madrid vs Barcelona" value={event}
+              <label>{t('calc.event')}</label>
+              <input className="input" placeholder={t('calc.eventPh')} value={event}
                 onChange={(e) => { setEvent(e.target.value); setSaved(false); }} />
             </div>
             <div className="row" style={{ gap: 16 }}>
               <div className="field grow">
-                <label>Deporte</label>
+                <label>{t('calc.sport')}</label>
                 <select className="select" value={sport} onChange={(e) => setSport(e.target.value)}>
-                  {SPORTS.map((s) => <option key={s}>{s}</option>)}
+                  {SPORTS.map((s) => <option key={s.v} value={s.v}>{sportLabel(s)}</option>)}
                 </select>
               </div>
               <div className="field grow">
-                <label>Mercado</label>
-                <input className="input" placeholder="1X2, Ganador…" value={market}
+                <label>{t('calc.market')}</label>
+                <input className="input" placeholder={t('calc.marketPh')} value={market}
                   onChange={(e) => setMarket(e.target.value)} />
               </div>
               <div className="field grow">
-                <label>Fecha</label>
+                <label>{t('calc.date')}</label>
                 <input className="input" type="date" value={placedAt} onChange={(e) => setPlacedAt(e.target.value)} />
               </div>
             </div>
             <button className="btn btn--primary" onClick={save} disabled={!calc || saving}>
-              <IconCheck size={16} /> {saving ? 'Guardando…' : 'Guardar apuesta'}
+              <IconCheck size={16} /> {saving ? t('calc.saving') : t('calc.save')}
             </button>
           </div>
         </div>
@@ -177,10 +185,10 @@ export default function Calculator() {
       {/* ---- Resultados ---- */}
       <div className="panel" style={{ position: 'sticky', top: 88 }}>
         <div className="panel__head">
-          <h2>Resultado</h2>
+          <h2>{t('calc.result')}</h2>
           {calc && (
             <span className={`badge ${isArb ? 'badge--profit' : 'badge--loss'}`}>
-              {isArb ? <><IconBolt size={13} /> Surebet</> : 'Sin arbitraje'}
+              {isArb ? <><IconBolt size={13} /> {t('calc.surebet')}</> : t('calc.noArb')}
             </span>
           )}
         </div>
@@ -188,8 +196,8 @@ export default function Calculator() {
         {!calc ? (
           <div className="empty">
             <IconBolt />
-            <h3>Introduce las cuotas</h3>
-            <p>Rellena al menos 2 resultados con su cuota para calcular el reparto y el beneficio garantizado.</p>
+            <h3>{t('calc.introTitle')}</h3>
+            <p>{t('calc.introText')}</p>
           </div>
         ) : (
           <>
@@ -199,8 +207,8 @@ export default function Calculator() {
               </div>
               <div className="result-big__label">
                 {isArb
-                  ? <>Beneficio garantizado de <strong className="value-profit">{money(calc.guaranteedProfit, { sign: true })}</strong></>
-                  : 'Estas cuotas no garantizan beneficio'}
+                  ? <>{t('calc.guaranteed')} <strong className="value-profit">{money(calc.guaranteedProfit, { sign: true })}</strong></>
+                  : t('calc.noProfit')}
               </div>
             </div>
 
@@ -208,26 +216,26 @@ export default function Calculator() {
               {legs.map((l, i) => (
                 <div className="payout-row" key={i}>
                   <div>
-                    <div className="payout-row__book">{l.bookmaker || `Casa ${i + 1}`}</div>
-                    <div className="payout-row__out">{l.outcome || `Resultado ${i + 1}`} · cuota {decimals[i]?.toFixed(2)}</div>
+                    <div className="payout-row__book">{l.bookmaker || `${t('calc.house')} ${i + 1}`}</div>
+                    <div className="payout-row__out">{l.outcome || `${t('calc.outcome')} ${i + 1}`} · {t('calc.odds')} {decimals[i]?.toFixed(2)}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div className="cell-strong num">{money(calc.stakes[i])}</div>
-                    <div className="cell-sub num">retorno {money(calc.payouts[i])}</div>
+                    <div className="cell-sub num">{t('calc.return')} {money(calc.payouts[i])}</div>
                   </div>
                 </div>
               ))}
 
               <div className="payout-row">
-                <span className="muted">Inversión total</span>
+                <span className="muted">{t('calc.totalStake')}</span>
                 <span className="cell-strong num">{money(calc.totalStake)}</span>
               </div>
               <div className="payout-row">
-                <span className="muted">Beneficio garantizado</span>
+                <span className="muted">{t('calc.guaranteedShort')}</span>
                 <span className={`cell-strong ${isArb ? 'value-profit' : 'value-loss'}`}>{money(calc.guaranteedProfit, { sign: true })}</span>
               </div>
               <div className="payout-row">
-                <span className="muted">Suma prob. implícitas</span>
+                <span className="muted">{t('calc.impliedSum')}</span>
                 <span className="num">{calc.arbPercent.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %</span>
               </div>
             </div>

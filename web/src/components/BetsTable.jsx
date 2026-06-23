@@ -1,4 +1,5 @@
-import { money, pct, pnlClass, fmtDateShort, STATUS } from '../lib/format.js';
+import { money, pct, pnlClass, fmtDateShort, localeFor, STATUS } from '../lib/format.js';
+import { useT, useSettings } from '../settings.jsx';
 import { IconCheck, IconX, IconTrash } from './icons.jsx';
 
 export function effectiveProfit(b) {
@@ -8,19 +9,21 @@ export function effectiveProfit(b) {
 }
 
 export default function BetsTable({ bets, compact = false, onMark, onDelete }) {
+  const t = useT();
+  const { lang } = useSettings();
   if (!bets.length) return null;
   return (
     <div className="table-wrap">
       <table className="table">
         <thead>
           <tr>
-            <th>Fecha</th>
-            <th>Evento</th>
-            <th className="right">Stake</th>
-            <th className="right">Beneficio</th>
-            <th className="right">%</th>
-            <th>Estado</th>
-            {!compact && <th aria-label="Acciones" />}
+            <th>{t('bets.date')}</th>
+            <th>{t('bets.event')}</th>
+            <th className="right">{t('bets.stake')}</th>
+            <th className="right">{t('bets.profit')}</th>
+            <th className="right">{t('bets.pct')}</th>
+            <th>{t('bets.status')}</th>
+            {!compact && <th aria-label="actions" />}
           </tr>
         </thead>
         <tbody>
@@ -29,7 +32,7 @@ export default function BetsTable({ bets, compact = false, onMark, onDelete }) {
             const st = STATUS[b.status] || STATUS.pending;
             return (
               <tr key={b.id}>
-                <td className="nowrap cell-sub">{fmtDateShort(b.placed_at)}</td>
+                <td className="nowrap cell-sub">{fmtDateShort(b.placed_at, localeFor(lang))}</td>
                 <td>
                   <div className="cell-strong">{b.event}</div>
                   {!compact ? (
@@ -47,19 +50,19 @@ export default function BetsTable({ bets, compact = false, onMark, onDelete }) {
                 <td className="right num">{money(b.total_stake)}</td>
                 <td className={`right ${pnlClass(p)}`}>{money(p, { sign: true })}</td>
                 <td className="right num">{pct(b.profit_pct, { sign: true })}</td>
-                <td><span className={`badge ${st.badge}`}><span className="dot" />{st.label}</span></td>
+                <td><span className={`badge ${st.badge}`}><span className="dot" />{t(`st.${b.status}`)}</span></td>
                 {!compact && (
                   <td className="nowrap">
                     {b.status === 'pending' ? (
                       <div className="row" style={{ gap: 6 }}>
-                        <button className="btn btn--icon btn--ghost" title="Marcar ganada" onClick={() => onMark(b, 'won')}><IconCheck size={15} /></button>
-                        <button className="btn btn--icon btn--ghost" title="Marcar perdida" onClick={() => onMark(b, 'lost')}><IconX size={15} /></button>
-                        <button className="btn btn--icon btn--danger" title="Eliminar" onClick={() => onDelete(b)}><IconTrash size={15} /></button>
+                        <button className="btn btn--icon btn--ghost" title={t('bets.markWon')} onClick={() => onMark(b, 'won')}><IconCheck size={15} /></button>
+                        <button className="btn btn--icon btn--ghost" title={t('bets.markLost')} onClick={() => onMark(b, 'lost')}><IconX size={15} /></button>
+                        <button className="btn btn--icon btn--danger" title={t('bets.delete')} onClick={() => onDelete(b)}><IconTrash size={15} /></button>
                       </div>
                     ) : (
                       <div className="row" style={{ gap: 6 }}>
-                        <button className="btn btn--sm btn--ghost" onClick={() => onMark(b, 'pending')}>Reabrir</button>
-                        <button className="btn btn--icon btn--danger" title="Eliminar" onClick={() => onDelete(b)}><IconTrash size={15} /></button>
+                        <button className="btn btn--sm btn--ghost" onClick={() => onMark(b, 'pending')}>{t('bets.reopen')}</button>
+                        <button className="btn btn--icon btn--danger" title={t('bets.delete')} onClick={() => onDelete(b)}><IconTrash size={15} /></button>
                       </div>
                     )}
                   </td>
