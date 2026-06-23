@@ -22,7 +22,6 @@ export default function Calculator() {
     { bookmaker: '', outcome: '', odds: '' },
   ]);
   const [totalStake, setTotalStake] = useState('100');
-  const [rounding, setRounding] = useState('0');
 
   const [event, setEvent] = useState('');
   const [sport, setSport] = useState('Fútbol');
@@ -36,8 +35,8 @@ export default function Calculator() {
   const allValid = decimals.length >= 2 && decimals.every((o) => o > 1);
 
   const calc = useMemo(
-    () => (allValid ? calcArbitrage(decimals, num(totalStake) || 0, { round: Number(rounding) }) : null),
-    [JSON.stringify(decimals), totalStake, rounding, allValid]
+    () => (allValid ? calcArbitrage(decimals, num(totalStake) || 0, { round: 0 }) : null),
+    [JSON.stringify(decimals), totalStake, allValid]
   );
 
   function setLeg(i, patch) {
@@ -95,24 +94,12 @@ export default function Calculator() {
         <div className="panel">
           <div className="panel__head">
             <h2>{t('calc.title')}</h2>
-            <span className="muted" style={{ fontSize: '0.8rem' }}>{t('calc.decimal')}</span>
           </div>
           <div className="panel__body stack">
-            <div className="row" style={{ gap: 16 }}>
-              <div className="field grow">
-                <label>{t('calc.totalStake')}</label>
-                <input className="input num" inputMode="decimal" value={totalStake}
-                  onChange={(e) => { setTotalStake(e.target.value); setSaved(false); }} placeholder="100" />
-              </div>
-              <div className="field grow">
-                <label>{t('calc.rounding')}</label>
-                <select className="select" value={rounding} onChange={(e) => setRounding(e.target.value)}>
-                  <option value="0">{t('calc.noRound')}</option>
-                  <option value="1">{t('calc.roundTo')} 1</option>
-                  <option value="5">{t('calc.roundTo')} 5</option>
-                  <option value="10">{t('calc.roundTo')} 10</option>
-                </select>
-              </div>
+            <div className="field">
+              <label>{t('calc.totalStake')}</label>
+              <input className="input num" inputMode="decimal" value={totalStake}
+                onChange={(e) => { setTotalStake(e.target.value); setSaved(false); }} placeholder="100" />
             </div>
 
             <div>

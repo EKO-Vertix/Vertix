@@ -51,9 +51,6 @@ export default function Login() {
             </button>
           </form>
           <p className="auth__alt">{t('auth.noAccount')} <Link to="/register">{t('auth.signup')}</Link></p>
-          <p className="auth__alt faint" style={{ marginTop: 8, fontSize: '0.78rem' }}>
-            Demo: demo@surebets.app / demo1234
-          </p>
         </div>
       </div>
     </div>
