@@ -54,6 +54,9 @@ const DICT = {
     'set.title': 'Ajustes', 'set.language': 'Idioma', 'set.langSub': 'Idioma de la interfaz',
     'set.theme': 'Apariencia', 'set.themeSub': 'Tema claro u oscuro', 'set.dark': 'Oscuro', 'set.light': 'Claro',
     'set.account': 'Cuenta', 'set.spanish': 'Español', 'set.english': 'English',
+    'admin.title': 'Administración', 'admin.sub': 'Estadísticas globales — solo visible para ti',
+    'admin.users': 'Usuarios', 'admin.bets': 'Apuestas', 'admin.staked': 'Total apostado',
+    'admin.recent': 'Últimos registros', 'admin.none': 'Aún no hay usuarios.', 'admin.error': 'No se pudieron cargar las estadísticas.',
   },
   en: {
     'nav.dashboard': 'Dashboard', 'nav.calculator': 'Calculator', 'nav.bets': 'Bets',
@@ -107,8 +110,14 @@ const DICT = {
     'set.title': 'Settings', 'set.language': 'Language', 'set.langSub': 'Interface language',
     'set.theme': 'Appearance', 'set.themeSub': 'Light or dark theme', 'set.dark': 'Dark', 'set.light': 'Light',
     'set.account': 'Account', 'set.spanish': 'Español', 'set.english': 'English',
+    'admin.title': 'Administration', 'admin.sub': 'Global stats — only visible to you',
+    'admin.users': 'Users', 'admin.bets': 'Bets', 'admin.staked': 'Total staked',
+    'admin.recent': 'Recent sign-ups', 'admin.none': 'No users yet.', 'admin.error': 'Could not load stats.',
   },
 };
+
+// Email con acceso a la sección de administración (debe coincidir con ADMIN_EMAIL del backend).
+export const ADMIN_EMAIL = 'anwarmendsdeniali@gmail.com';
 
 export const MONTHS = {
   es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],

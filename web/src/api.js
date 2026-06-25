@@ -51,4 +51,6 @@ export const api = {
   summary: () => request('/stats/summary'),
   calendar: (month) => request(`/stats/calendar?month=${month}`),
   monthly: (year) => request(`/stats/monthly?year=${year}`),
+
+  adminStats: () => request('/admin/stats'),
 };

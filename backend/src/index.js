@@ -6,6 +6,7 @@ import { initDb } from './db.js';
 import authRoutes from './routes/auth.routes.js';
 import betRoutes from './routes/bets.routes.js';
 import statsRoutes from './routes/stats.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 import { fetchLiveOdds } from './odds.js';
 
 const app = express();
@@ -17,6 +18,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true, db: 'postgres', ts: Da
 app.use('/api/auth', authRoutes);
 app.use('/api/bets', betRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Cuotas en vivo (stub, listo para enchufar un proveedor real)
 app.get('/api/odds', async (req, res) => {
