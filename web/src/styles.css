@@ -340,7 +340,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .set-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); }
 .set-row__title { font-weight: 600; color: var(--ink); }
 .set-row__sub { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
-.admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); }
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--s3); }
 .admin-stat { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: var(--s4); text-align: center; }
 .admin-stat__n { font-family: var(--font-mono, monospace); font-size: 1.45rem; font-weight: 700; color: var(--ink); line-height: 1.1; }
 .admin-stat__l { font-size: 0.74rem; color: var(--muted); margin-top: 5px; }

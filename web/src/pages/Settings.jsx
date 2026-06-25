@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSettings, useT, ADMIN_EMAIL } from '../settings.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../api.js';
-import { money, localeFor } from '../lib/format.js';
+import { localeFor } from '../lib/format.js';
 import { IconLogout } from '../components/icons.jsx';
 
 function Row({ title, sub, children }) {
@@ -71,14 +71,6 @@ export default function Settings() {
                   <div className="admin-stat">
                     <div className="admin-stat__n">{stats.users}</div>
                     <div className="admin-stat__l">{t('admin.users')}</div>
-                  </div>
-                  <div className="admin-stat">
-                    <div className="admin-stat__n">{stats.bets}</div>
-                    <div className="admin-stat__l">{t('admin.bets')}</div>
-                  </div>
-                  <div className="admin-stat">
-                    <div className="admin-stat__n">{money(stats.totalStaked)}</div>
-                    <div className="admin-stat__l">{t('admin.staked')}</div>
                   </div>
                 </div>
 
