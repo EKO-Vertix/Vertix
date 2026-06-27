@@ -130,6 +130,22 @@ export default function CalendarPage() {
                   <div className="cal-stat"><span className="cal-stat__k">{t('cal.dRecord')}</span><span className="cal-stat__v">{detail.record}</span></div>
                   <div className="cal-stat"><span className="cal-stat__k">{t('cal.dRoi')}</span><span className="cal-stat__v" style={{ color: `var(--${detail.profit >= 0 ? 'profit' : 'loss'})` }}>{detail.roi}</span></div>
                 </div>
+
+                <div className="cal-betlist">
+                  {dayBets.map((b) => {
+                    const p = effectiveProfit(b);
+                    const sub = [b.event && b.market ? b.market : (b.sport || ''), t(`st.${b.status}`)].filter(Boolean).join(' · ');
+                    return (
+                      <div className="cal-bet" key={b.id}>
+                        <div className="cal-bet__main">
+                          <div className="cal-bet__event">{b.event}</div>
+                          <div className="cal-bet__sub">{sub}</div>
+                        </div>
+                        <div className={`cal-bet__amt ${pnlClass(p)}`}>{money(p, { sign: true })}</div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <div className="cal-empty">{t('cal.tapDay')}</div>

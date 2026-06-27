@@ -61,6 +61,7 @@ const DICT = {
 
     'cal.month': 'Beneficio del mes', 'cal.bets': 'Apuestas', 'cal.today': 'Hoy', 'cal.tapDay': 'Toca un día para ver el detalle',
     'cal.dBets': 'Apuestas', 'cal.dRecord': 'Récord', 'cal.dRoi': 'ROI', 'cal.noDayBets': 'No hay apuestas registradas este día.',
+    'cal.dayList': 'Apuestas del día',
 
     'set.title': 'Ajustes', 'set.language': 'Idioma', 'set.langSub': 'Idioma de la interfaz',
     'set.theme': 'Apariencia', 'set.themeSub': 'Tema claro u oscuro', 'set.dark': 'Oscuro', 'set.light': 'Claro',
@@ -129,6 +130,7 @@ const DICT = {
 
     'cal.month': 'Profit this month', 'cal.bets': 'Bets', 'cal.today': 'Today', 'cal.tapDay': 'Tap a day to see the breakdown',
     'cal.dBets': 'Bets', 'cal.dRecord': 'Record', 'cal.dRoi': 'ROI', 'cal.noDayBets': 'No bets logged on this day.',
+    'cal.dayList': 'Bets that day',
 
     'set.title': 'Settings', 'set.language': 'Language', 'set.langSub': 'Interface language',
     'set.theme': 'Appearance', 'set.themeSub': 'Light or dark theme', 'set.dark': 'Dark', 'set.light': 'Light',

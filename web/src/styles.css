@@ -352,6 +352,12 @@ table.table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 @media (max-width: 420px) { .admin-stat__n { font-size: 1.2rem; } }
 .addbet-result { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); padding: var(--s4); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-sm); }
 .addbet-result__val { font-family: var(--font-mono, monospace); font-size: 1.35rem; font-weight: 700; color: var(--ink); }
+.cal-betlist { display: flex; flex-direction: column; margin-top: var(--s3); }
+.cal-bet { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: 9px 0; border-top: 1px solid var(--border); }
+.cal-bet__main { min-width: 0; }
+.cal-bet__event { font-size: 0.86rem; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-bet__sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+.cal-bet__amt { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
 .grow { flex: 1; min-width: 0; }
 .muted { color: var(--muted); }
 .faint { color: var(--faint); }
