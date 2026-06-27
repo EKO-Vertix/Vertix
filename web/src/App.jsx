@@ -8,6 +8,7 @@ import Calculator from './pages/Calculator.jsx';
 import Bets from './pages/Bets.jsx';
 import CalendarPage from './pages/CalendarPage.jsx';
 import Settings from './pages/Settings.jsx';
+import AddBet from './pages/AddBet.jsx';
 
 function Protected({ children }) {
   const { user, loading } = useAuth();
@@ -25,6 +26,7 @@ export default function App() {
       <Route element={<Protected><Layout /></Protected>}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/calculadora" element={<Calculator />} />
+        <Route path="/anadir" element={<AddBet />} />
         <Route path="/apuestas" element={<Bets />} />
         <Route path="/calendario" element={<CalendarPage />} />
         <Route path="/ajustes" element={<Settings />} />

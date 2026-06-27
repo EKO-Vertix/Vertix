@@ -8,6 +8,7 @@ import {
 const NAV = [
   { to: '/', key: 'dashboard', icon: IconDashboard, end: true },
   { to: '/calculadora', key: 'calculator', icon: IconCalculator },
+  { to: '/anadir', key: 'add', icon: IconPlus },
   { to: '/apuestas', key: 'bets', icon: IconList },
   { to: '/calendario', key: 'calendar', icon: IconCalendar },
   { to: '/ajustes', key: 'settings', icon: IconSettings },
@@ -36,7 +37,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const current = NAV.find((n) => (n.end ? location.pathname === n.to : location.pathname.startsWith(n.to))) || NAV[0];
   const initials = (user?.name || user?.email || '?').trim().slice(0, 1).toUpperCase();
-  const showNew = location.pathname !== '/calculadora' && location.pathname !== '/ajustes';
+  const showNew = location.pathname !== '/calculadora' && location.pathname !== '/ajustes' && location.pathname !== '/anadir';
 
   return (
     <div className="app">

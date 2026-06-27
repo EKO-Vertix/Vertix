@@ -37,13 +37,18 @@ router.post('/', wrap(async (req, res) => {
   const b = req.body || {};
   if (!b.event) return res.status(400).json({ error: 'El evento es obligatorio' });
   const legs = Array.isArray(b.legs) ? b.legs : [];
-  if (legs.length < 2) return res.status(400).json({ error: 'Se requieren al menos 2 resultados' });
 
-  // Recalcular en el servidor para mantener la integridad de los números
+  // El importe sale de total_stake o, si no, de la suma de los stakes de las patas.
   const totalStake = Number(b.total_stake) || legs.reduce((a, l) => a + (Number(l.stake) || 0), 0);
-  const calc = calcArbitrage(legs.map((l) => Number(l.odds)), totalStake);
+  if (!(totalStake > 0)) return res.status(400).json({ error: 'El importe debe ser mayor que 0' });
+
+  // Con 2+ resultados (surebet) se puede recalcular el arbitraje en el servidor.
+  // Con menos (apuesta manual: simple, combinada…) se usan los valores enviados.
+  const calc = legs.length >= 2 ? calcArbitrage(legs.map((l) => Number(l.odds)), totalStake) : null;
   const expected = b.expected_profit != null ? Number(b.expected_profit) : (calc ? calc.guaranteedProfit : 0);
-  const profitPct = b.profit_pct != null ? Number(b.profit_pct) : (calc ? calc.profitPctRealized : 0);
+  const profitPct = b.profit_pct != null
+    ? Number(b.profit_pct)
+    : (calc ? calc.profitPctRealized : Math.round((expected / totalStake) * 10000) / 100);
   const placedAt = b.placed_at || new Date().toISOString().slice(0, 10);
 
   const r = await query(`
