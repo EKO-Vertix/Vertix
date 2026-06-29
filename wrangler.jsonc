@@ -1,7 +1,7 @@
 {
   // Despliegue de la web (Vite SPA) como sitio estático en Cloudflare Workers.
   // Sirve los archivos de web/dist; las peticiones a estáticos son gratis e ilimitadas.
-  "name": "vertix",
+  "name": "vertixbets",
   "compatibility_date": "2026-06-28",
   // Compila la web antes de desplegar. Así `wrangler deploy` genera web/dist
   // por sí mismo, aunque el "Build command" del panel esté vacío.
