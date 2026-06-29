@@ -1,0 +1,11 @@
+{
+  // Despliegue de la web (Vite SPA) como sitio estático en Cloudflare Workers.
+  // Sirve los archivos de web/dist; las peticiones a estáticos son gratis e ilimitadas.
+  "name": "vertix",
+  "compatibility_date": "2026-06-28",
+  "assets": {
+    "directory": "./web/dist",
+    // Las rutas desconocidas devuelven index.html (enrutado SPA de React Router).
+    "not_found_handling": "single-page-application"
+  }
+}
